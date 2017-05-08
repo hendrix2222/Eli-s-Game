@@ -1,0 +1,6 @@
+
+var GameState = new Play();
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, '', GameState);
+
+
