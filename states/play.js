@@ -41,13 +41,9 @@ function Play() {
         // group for stuff we can jump on
         platforms = game.add.group();
 
-        // invisible walls for checking the edges
-        walls = game.add.group();
-
         // enable physics for these groups
         platforms.enableBody = true;
         game.physics.arcade.enable(platforms);
-        walls.enableBody = true;
 
         // the ground
         var ground = platforms.create(0, game.world.height - 64, 'ground');
@@ -64,14 +60,6 @@ function Play() {
         ledge = platforms.create(-150, 250, 'ground');
         ledge.body.immovable = true;
 
-        // walls
-        var wall = walls.create(0, 0, 'left');
-        wall.scale.setTo(0, game.world.height);
-        wall.body.immovable = true;
-        wall = walls.create(game.world.width, 0, 'right');
-        wall.scale.setTo(0, game.world.height);
-        wall.body.immovable = true;
-
         // playa, playa
         player = game.add.sprite(32, game.world.height - 150, 'dude');
 
@@ -81,7 +69,7 @@ function Play() {
         // physics for the player, slight bounce
         player.body.bounce.y = 0.2;
         player.body.gravity.y = 300;
-        player.collideWorldBounds = true;
+        player.body.collideWorldBounds = true;
 
         // walking animations
         player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -126,7 +114,6 @@ function Play() {
 
         // collision
         game.physics.arcade.collide(player, platforms, this.enableJumping, null, this);
-        game.physics.arcade.collide(player, walls);
         game.physics.arcade.collide(stars, platforms);
         
         // player overlap with stars
