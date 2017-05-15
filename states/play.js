@@ -6,6 +6,8 @@ function Play() {
     this.numStars = 0;
     this.velocity_y_text = 0;
     this.jumpable = false;
+    this.map = null;
+    this.layer = null;
 
     this.collectStar = function(player, star) {
         // remove star
@@ -19,8 +21,10 @@ function Play() {
 
     }
 
-    this.enableJumping = function(player, platform) {
+    this.enableJumping = function(player, tile) {
         this.jumpable = true;
+
+        return true;
     }
 
     this.preload = function() {
@@ -28,6 +32,10 @@ function Play() {
         game.load.image('ground', 'assets/platform.png');
         game.load.image('star', 'assets/star.png');
         game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+
+        // try to load a level here
+        game.load.tilemap('testLevel', 'json/testMap.json', null, Phaser.Tilemap.TILED_JSON);
+        game.load.image('tiles', 'assets/platforms.png');
     }
 
     this.create = function() {
@@ -38,28 +46,13 @@ function Play() {
         // background
         game.add.sprite(0,0, 'sky');
 
-        // group for stuff we can jump on
-        platforms = game.add.group();
-
-        // enable physics for these groups
-        platforms.enableBody = true;
-        game.physics.arcade.enable(platforms);
-
-        // the ground
-        var ground = platforms.create(0, game.world.height - 64, 'ground');
-
-        // scale it to fit
-        ground.scale.setTo(2, 2);
-
-        // don't let it fall away
-        ground.body.immovable = true;
-
-        // ledges
-        var ledge = platforms.create(400, 400, 'ground');
-        ledge.body.immovable = true;
-        ledge = platforms.create(-150, 250, 'ground');
-        ledge.body.immovable = true;
-
+        // create the level that we loaded earlier
+        this.map = game.add.tilemap("testLevel");
+        this.map.addTilesetImage("platforms", "tiles");
+        this.layer = this.map.createLayer("Tile Layer 1");
+        this.map.setCollisionBetween(0,7);
+        this.map.setTileIndexCallback([0,1,2,3,4,5,6,7], this.enableJumping, this);
+           
         // playa, playa
         player = game.add.sprite(32, game.world.height - 150, 'dude');
 
@@ -101,21 +94,15 @@ function Play() {
 
         // set up the scoreboard, created this last so that it's rendered on top
         this.scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
-        // debug the y velocity of the player
-        this.velocity_y_text = game.add.text(16, 58, 'velocity y: 0', { fontSize: '32px', fill: '#000' });
     },
 
     this.update = function() {
         this.jumpable = false;
 
-        // update our debug value
-        this.velocity_y_text.setText(player.body.velocity.y);
-
         // collision
-        game.physics.arcade.collide(player, platforms, this.enableJumping, null, this);
-        game.physics.arcade.collide(stars, platforms);
-        
+        game.physics.arcade.collide(player, this.layer, this.enableJumping, null, this);
+        game.physics.arcade.collide(stars, this.layer);
+
         // player overlap with stars
         game.physics.arcade.overlap(player, stars, this.collectStar, null, this);
 
@@ -141,7 +128,7 @@ function Play() {
         }
 
         // jump, but only on solid ground
-        if(cursors.up.isDown && player.body.touching.down && this.jumpable)
+        if(cursors.up.isDown && player.body.blocked.down && this.jumpable)
         {
             player.body.velocity.y = -350;
         }

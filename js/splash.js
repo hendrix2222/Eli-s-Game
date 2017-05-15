@@ -3,8 +3,8 @@ var Splash = function () {};
 
 Splash.prototype = {
 
-     // asset loading functions
-
+    // asset loading functions
+    
     loadScripts: function () {
         game.load.script('gameOver',    'states/gameOver.js');
         game.load.script('play',        'states/play.js');

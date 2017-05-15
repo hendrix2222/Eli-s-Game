@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="left-up" width="50" height="38" tilewidth="16" tileheight="16" nextobjectid="1">
+<map version="1.0" orientation="orthogonal" renderorder="left-up" width="50" height="38" tilewidth="16" tileheight="16" nextobjectid="5">
  <tileset firstgid="1" name="platforms" tilewidth="16" tileheight="16" tilecount="8" columns="8">
-  <image source="platforms.png" width="128" height="16"/>
+  <image source="../assets/platforms.png" width="128" height="16"/>
  </tileset>
+ <tileset firstgid="9" name="player" tilewidth="16" tileheight="32" tilecount="9" columns="9">
+  <image source="../assets/player.png" width="144" height="32"/>
+ </tileset>
+ <imagelayer name="Image Layer 1">
+  <image source="../assets/images/stars.jpg" width="800" height="648"/>
+ </imagelayer>
  <layer name="Tile Layer 1" width="50" height="38">
+  <properties>
+   <property name="collision" type="bool" value="true"/>
+  </properties>
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -45,4 +54,12 @@
 8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8,8
 </data>
  </layer>
+ <objectgroup name="Object Layer 1" offsetx="1" offsety="4">
+  <object id="4" name="player" gid="13" x="66" y="474" width="16" height="32">
+   <properties>
+    <property name="group" value="players"/>
+    <property name="texture" value="player.png"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>
