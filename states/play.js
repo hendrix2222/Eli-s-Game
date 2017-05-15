@@ -32,6 +32,7 @@ function Play() {
         game.load.image('ground', 'assets/platform.png');
         game.load.image('star', 'assets/star.png');
         game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+        game.load.spritesheet('indy', 'assets/player.png', 16, 32);
 
         // try to load a level here
         game.load.tilemap('testLevel', 'json/testMap.json', null, Phaser.Tilemap.TILED_JSON);
@@ -54,14 +55,14 @@ function Play() {
         this.map.setTileIndexCallback([0,1,2,3,4,5,6,7], this.enableJumping, this);
            
         // playa, playa
-        player = game.add.sprite(32, game.world.height - 150, 'dude');
-
+        player = game.add.sprite(32, game.world.height - 150, 'indy');
+        
         // player physics
         game.physics.arcade.enable(player);
 
         // physics for the player, slight bounce
-        player.body.bounce.y = 0.2;
-        player.body.gravity.y = 300;
+        player.body.bounce.y = 0.01;
+        player.body.gravity.y = 600;
         player.body.collideWorldBounds = true;
 
         // walking animations
@@ -84,7 +85,7 @@ function Play() {
             game.physics.arcade.enable(star);
 
             // gravity
-            star.body.gravity.y = 6;
+            star.body.gravity.y = 300;
 
             // random bounciness
             star.body.bounce.y = 0.7 + Math.random() * 0.2;
@@ -130,7 +131,7 @@ function Play() {
         // jump, but only on solid ground
         if(cursors.up.isDown && player.body.blocked.down && this.jumpable)
         {
-            player.body.velocity.y = -350;
+            player.body.velocity.y = -250;
         }
 
         // Check to see if we collected all the stars
