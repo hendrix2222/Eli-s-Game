@@ -1,3 +1,5 @@
+const GAME_SCALE = 2;
+
 
 function Play() {
     // score stuff
@@ -45,17 +47,21 @@ function Play() {
         game.physics.startSystem(Phaser.Physics.ARCADE);
 
         // background
-        game.add.sprite(0,0, 'sky');
+        skySprite = game.add.sprite(0,0, 'sky');
+        skySprite.scale.setTo(GAME_SCALE, GAME_SCALE);
 
         // create the level that we loaded earlier
         this.map = game.add.tilemap("testLevel");
         this.map.addTilesetImage("platforms", "tiles");
         this.layer = this.map.createLayer("Tile Layer 1");
+        this.layer.setScale(GAME_SCALE);
         this.map.setCollisionBetween(0,7);
         this.map.setTileIndexCallback([0,1,2,3,4,5,6,7], this.enableJumping, this);
+        this.layer.resizeWorld();
            
         // playa, playa
-        player = game.add.sprite(32, game.world.height - 150, 'indy');
+        player = game.add.sprite(32, game.world.height / 2, 'indy');
+        player.scale.setTo(GAME_SCALE, GAME_SCALE);
         
         // player physics
         game.physics.arcade.enable(player);
@@ -69,6 +75,8 @@ function Play() {
         player.animations.add('left', [0, 1, 2, 3], 10, true);
         player.animations.add('right', [5, 6, 7, 8], 10, true);
 
+        game.camera.follow(player);
+
         // player controls
         cursors = game.input.keyboard.createCursorKeys();
 
@@ -76,10 +84,11 @@ function Play() {
         stars = game.add.group();
 
         // 12, evenly spaced
+        var starSpace = game.world.width / 12;
         for(var i = 0; i < 12; ++i)
         {
             // Create in the group
-            var star = stars.create(i * 70, 0, 'star');
+            var star = stars.create(i * starSpace, 0, 'star');
 
             // enable this or the gravity call will fail
             game.physics.arcade.enable(star);
@@ -95,6 +104,7 @@ function Play() {
 
         // set up the scoreboard, created this last so that it's rendered on top
         this.scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+        this.scoreText.fixedToCamera = true;
     },
 
     this.update = function() {
@@ -113,12 +123,12 @@ function Play() {
         // check for movement
         if(cursors.left.isDown)
         {
-            player.body.velocity.x = -150;
+            player.body.velocity.x = -150 * GAME_SCALE;
             player.animations.play('left');
         }
         else if(cursors.right.isDown)
         {
-            player.body.velocity.x = 150;
+            player.body.velocity.x = 150 * GAME_SCALE;
             player.animations.play('right');
         }
         else
@@ -131,7 +141,7 @@ function Play() {
         // jump, but only on solid ground
         if(cursors.up.isDown && player.body.blocked.down && this.jumpable)
         {
-            player.body.velocity.y = -250;
+            player.body.velocity.y = -250 * GAME_SCALE;
         }
 
         // Check to see if we collected all the stars
